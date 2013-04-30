@@ -1,8 +1,13 @@
-= nifflsploit
+= Nifflsploit
 
-Description goes here.
+Nifflsploit is a wrapper around the exploit search on metasploit.com. It should be used to search for metasploit modules relating to CVEs. The name is derived from a small mammal in a childrens' novel that hunts for shiny objects.
 
-== Contributing to nifflsploit
+Usage:
+require 'nifflsploit'
+result = Nifflsploit.cve_search("CVE-2008-4250")
+result.name => "Microsoft Server Service Relative Path Stack Corruption"
+
+== Contributing to Nifflsploit
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
