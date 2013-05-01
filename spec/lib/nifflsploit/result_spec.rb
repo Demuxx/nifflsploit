@@ -43,6 +43,46 @@ describe Nifflsploit::Result do
     end # it
   end # context
   
+  context 'with a valid ms08_067_netapi response' do
+    before do
+      file = open("spec/support/ms08_response.html")
+      response = Tempfile.new("temp")
+      response.write(file.read)
+      response.rewind
+      result = Nokogiri::HTML.parse(response)
+      response.unlink
+      @result = Nifflsploit::Result.parse(result)
+    end # before
+    
+    it 'returns the CVE name' do
+      @result.name.should eq("Microsoft Server Service Relative Path Stack Corruption")
+    end # it
+    
+    it 'returns the exploit rank' do
+      @result.rank.should eq("Great")
+    end # it
+    
+    it 'returns the exploit authors' do
+      @result.authors.should be_kind_of(Array)
+      @result.authors.first.should eq("hdm < hdm [at] metasploit.com >")
+    end # it
+    
+    it 'returns Vulnerability Reference links' do
+      @result.references.should be_kind_of(Array)
+      @result.references.first.should eq("http://cvedetails.com/cve/2008-4250/")
+    end # it
+    
+    it 'returns Development links' do
+      @result.development.should be_kind_of(Hash)
+      @result.development[:source_code].should eq("http://dev.metasploit.com/redmine/projects/framework/repository/entry/modules/exploits/windows/smb/ms08_067_netapi.rb")
+    end # it
+    
+    it 'returns Module Options hash' do
+      @result.module_options.should be_kind_of(Hash)
+      @result.module_options[:RHOST].should eq("The target address")
+    end # it
+  end # context
+  
   context 'with an invalid response' do
     before do
       document = Nokogiri::HTML::Document.new
@@ -51,9 +91,9 @@ describe Nifflsploit::Result do
     
     it 'returns an empty result object' do
       @result.name.should be_empty
-      @result.rank.should be_empty
-      @result.authors.should be_empty
-      @result.references.should be_empty
+      @result.rank.should be_nil
+      @result.authors.should be_nil
+      @result.references.should be_nil
       @result.development.to_a.should be_empty
       @result.module_options.to_a.should be_empty
     end # it
